@@ -1,6 +1,6 @@
 /**
  * 图片审核状态
- * @author clinxin <a href="http://localhost:5173">图管家</a>
+ * @author clinxin <a href="http://localhost:8888">图管家</a>
  */
 export const PIC_REVIEW_STATUS_ENUM = {
   REVIEWING: 0,

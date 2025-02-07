@@ -1,5 +1,5 @@
 <template>
-  <!-- @author clinxin <a href="http://localhost:5173">图管家 -->
+  <!-- @author clinxin <a href="http://localhost:8888">图管家 -->
   <div id="addPictureBatchPage">
     <h2 style="margin-bottom: 16px">批量创建</h2>
     <!-- 图片信息表单 -->
