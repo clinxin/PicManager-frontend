@@ -473,6 +473,12 @@ declare namespace API {
     userId?: number
   }
 
+  type TaskMetrics = {
+    failed?: number
+    succeeded?: number
+    total?: number
+  }
+
   type testDownloadFileUsingGETParams = {
     /** filepath */
     filepath?: string
