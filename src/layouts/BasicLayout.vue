@@ -1,5 +1,6 @@
 <template>
   <div id="basicLayout">
+    <!-- vh表示可视高度-->
     <a-layout style="min-height: 100vh">
       <a-layout-header class="header">
         <GlobalHeader />
@@ -19,7 +20,7 @@
 
 <script setup lang="ts">
 import GlobalHeader from '@/components/GlobalHeader.vue'
-import GlobalSider from "@/components/GlobalSider.vue";
+import GlobalSider from '@/components/GlobalSider.vue'
 </script>
 
 <style scoped>

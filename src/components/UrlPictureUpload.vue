@@ -18,7 +18,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { message } from 'ant-design-vue'
-import { uploadPictureByUrlUsingPost } from '@/api/pictureController.ts'
+import { uploadPictureByUrlUsingPost } from '@/api/pictureController'
 
 interface Props {
   picture?: API.PictureVO
@@ -37,8 +37,9 @@ const loading = ref<boolean>(false)
 const handleUpload = async () => {
   loading.value = true
   try {
+    // 上传时传递 spaceId
     const params: API.PictureUploadRequest = { fileUrl: fileUrl.value }
-    params.spaceId = props.spaceId;
+    params.spaceId = props.spaceId
     if (props.picture) {
       params.id = props.picture.id
     }
@@ -52,9 +53,10 @@ const handleUpload = async () => {
     }
   } catch (error) {
     console.error('图片上传失败', error)
-    message.error('图片上传失败，' + error.message)
+    message.error('图片上传失败')
+  } finally {
+    loading.value = false
   }
-  loading.value = false
 }
 </script>
 <style scoped>

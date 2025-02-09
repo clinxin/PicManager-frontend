@@ -29,7 +29,9 @@ const dataList = ref<API.SpaceSizeAnalyzeResponse[]>([])
 // 加载状态
 const loading = ref(true)
 
-// 获取数据
+/**
+ * 加载数据
+ */
 const fetchData = async () => {
   loading.value = true
   // 转换搜索参数

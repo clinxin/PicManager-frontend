@@ -20,6 +20,15 @@
       :pagination="pagination"
       @change="doTableChange"
     >
+      <template #headerCell="{ column }">
+        <template v-if="column.key === 'name'">
+          <span>
+            <smile-outlined />
+            Name
+          </span>
+        </template>
+      </template>
+
       <template #bodyCell="{ column, record }">
         <template v-if="column.dataIndex === 'userAvatar'">
           <a-image :src="record.userAvatar" :width="120" />
@@ -43,6 +52,7 @@
   </div>
 </template>
 <script lang="ts" setup>
+import { SmileOutlined } from '@ant-design/icons-vue'
 import { computed, onMounted, reactive, ref } from 'vue'
 import { deleteUserUsingPost, listUserVoByPageUsingPost } from '@/api/userController.ts'
 import { message } from 'ant-design-vue'
@@ -93,6 +103,7 @@ const searchParams = reactive<API.UserQueryRequest>({
   pageSize: 10,
   sortField: 'createTime',
   sortOrder: 'ascend',
+  // sortOrder: "descend"
 })
 
 // 获取数据
@@ -116,11 +127,11 @@ onMounted(() => {
 // 分页参数
 const pagination = computed(() => {
   return {
-    current: searchParams.current,
-    pageSize: searchParams.pageSize,
+    current: searchParams.current ?? 1,
+    pageSize: searchParams.pageSize ?? 10,
     total: total.value,
     showSizeChanger: true,
-    showTotal: (total) => `共 ${total} 条`,
+    showTotal: (total: number) => `共 ${total} 条`,
   }
 })
 
@@ -140,16 +151,21 @@ const doSearch = () => {
 
 // 删除数据
 const doDelete = async (id: string) => {
-  if (!id) {
-    return
-  }
-  const res = await deleteUserUsingPost({ id })
-  if (res.data.code === 0) {
-    message.success('删除成功')
-    // 刷新数据
-    fetchData()
-  } else {
-    message.error('删除失败')
+  // const doDelete = async (id: number) => { // 解决办法1：调整id类型; 解决办法2：调整typings.d.ts里的id类型
+  if (confirm(`确认删除id为${id}的数据吗？`)) {
+    message.success(!id + 'sss')
+    if (!id) {
+      message.success(id + 'aaa')
+      return
+    }
+    const res = await deleteUserUsingPost({ id }) // id报红是因为这里定义的string与typings.d.ts里的number不匹配
+    if (res.data.code === 0) {
+      message.success('删除成功')
+      // 刷新数据
+      fetchData()
+    } else {
+      message.error('删除失败')
+    }
   }
 }
 </script>

@@ -12,9 +12,10 @@
           <a-card hoverable @click="doClickPicture(picture)">
             <template #cover>
               <img
+                style="height: 180px; object-fit: cover"
                 :alt="picture.name"
                 :src="picture.thumbnailUrl ?? picture.url"
-                style="height: 180px; object-fit: cover"
+                loading="lazy"
               />
             </template>
             <a-card-meta :title="picture.name">
@@ -31,7 +32,8 @@
             </a-card-meta>
             <template v-if="showOp" #actions>
               <ShareAltOutlined @click="(e) => doShare(picture, e)" />
-              <SearchOutlined @click="(e) => doSearch(picture, e)" />
+              <!-- 以图搜图功能（隐藏）  -->
+              <!-- <SearchOutlined @click="(e) => doSearch(picture, e)" />-->
               <EditOutlined v-if="canEdit" @click="(e) => doEdit(picture, e)" />
               <DeleteOutlined v-if="canDelete" @click="(e) => doDelete(picture, e)" />
             </template>
@@ -39,7 +41,7 @@
         </a-list-item>
       </template>
     </a-list>
-    <ShareModal ref="shareModalRef" :link="shareLink" />
+    <ShareModel ref="shareModalRef" :link="shareLink" />
   </div>
 </template>
 
@@ -51,9 +53,9 @@ import {
   SearchOutlined,
   ShareAltOutlined,
 } from '@ant-design/icons-vue'
-import { deletePictureUsingPost } from '@/api/pictureController.ts'
+import { deletePictureUsingPost } from '@/api/pictureController'
 import { message } from 'ant-design-vue'
-import ShareModal from '@/components/ShareModal.vue'
+import ShareModel from '@/components/ShareModel.vue'
 import { ref } from 'vue'
 
 interface Props {
@@ -114,18 +116,20 @@ const doDelete = async (picture, e) => {
   const res = await deletePictureUsingPost({ id })
   if (res.data.code === 0) {
     message.success('删除成功')
-    props.onReload?.()
+    // 让外层刷新
+    props?.onReload()
   } else {
     message.error('删除失败')
   }
 }
 
-// ----- 分享操作 ----
+// --------------- 分享操作 ---------------
+// 分享弹窗引用
 const shareModalRef = ref()
 // 分享链接
 const shareLink = ref<string>()
 // 分享
-const doShare = (picture, e) => {
+const doShare = (picture: API.PictureVO, e: Event) => {
   // 阻止冒泡
   e.stopPropagation()
   shareLink.value = `${window.location.protocol}//${window.location.host}/picture/${picture.id}`

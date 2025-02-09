@@ -40,18 +40,20 @@ import { onMounted, reactive, ref } from 'vue'
 import {
   editPictureByBatchUsingPost,
   listPictureTagCategoryUsingGet,
-} from '@/api/pictureController.ts'
+} from '@/api/pictureController'
 import { message } from 'ant-design-vue'
 
+// 定义组件属性类型
 interface Props {
   pictureList: API.PictureVO[]
   spaceId: number
   onSuccess: () => void
 }
 
+// 给组件指定初始值
 const props = withDefaults(defineProps<Props>(), {})
 
-// 是否可见
+// 控制弹窗可见性
 const visible = ref(false)
 
 // 打开弹窗
@@ -69,10 +71,11 @@ defineExpose({
   openModal,
 })
 
+// 初始化表单数据
 const formData = reactive<API.PictureEditByBatchRequest>({
-  category: '',
-  tags: [],
-  nameRule: '',
+  category: '', // 分类
+  tags: [], // 标签
+  nameRule: '', // 命名规则
 })
 
 /**
@@ -108,6 +111,7 @@ const tagOptions = ref<string[]>([])
 const getTagCategoryOptions = async () => {
   const res = await listPictureTagCategoryUsingGet()
   if (res.data.code === 0 && res.data.data) {
+    // 转换成下拉选项组件接受的格式
     tagOptions.value = (res.data.data.tagList ?? []).map((data: string) => {
       return {
         value: data,
@@ -129,3 +133,5 @@ onMounted(() => {
   getTagCategoryOptions()
 })
 </script>
+
+<style scoped></style>

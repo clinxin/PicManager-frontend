@@ -17,11 +17,11 @@
         <UrlPictureUpload :picture="picture" :spaceId="spaceId" :onSuccess="onSuccess" />
       </a-tab-pane>
     </a-tabs>
-    <!-- 图片编辑 -->
+    <!-- 图片编辑区域 -->
     <div v-if="picture" class="edit-bar">
       <a-space size="middle">
         <a-button :icon="h(EditOutlined)" @click="doEditPicture">编辑图片</a-button>
-        <a-button type="primary" :icon="h(FullscreenOutlined)" @click="doImagePainting">
+        <a-button type="primary" ghost :icon="h(FullscreenOutlined)" @click="doImagePainting">
           AI 扩图
         </a-button>
       </a-space>
@@ -156,6 +156,7 @@ const tagOptions = ref<string[]>([])
 const getTagCategoryOptions = async () => {
   const res = await listPictureTagCategoryUsingGet()
   if (res.data.code === 0 && res.data.data) {
+    // 转换成下拉选项组件接受的格式
     tagOptions.value = (res.data.data.tagList ?? []).map((data: string) => {
       return {
         value: data,
@@ -201,11 +202,14 @@ onMounted(() => {
 })
 
 // ----- 图片编辑器引用 ------
+// 图片编辑弹窗引用
 const imageCropperRef = ref()
 
 // 编辑图片
 const doEditPicture = async () => {
-  imageCropperRef.value?.openModal()
+  if (imageCropperRef.value) {
+    imageCropperRef.value.openModal()
+  }
 }
 
 // 编辑成功事件
@@ -214,14 +218,17 @@ const onCropSuccess = (newPicture: API.PictureVO) => {
 }
 
 // ----- AI 扩图引用 -----
+// AI 扩图弹窗引用
 const imageOutPaintingRef = ref()
 
-// 打开 AI 扩图弹窗
+// AI 扩图
 const doImagePainting = async () => {
-  imageOutPaintingRef.value?.openModal()
+  if (imageOutPaintingRef.value) {
+    imageOutPaintingRef.value.openModal()
+  }
 }
 
-// AI 扩图保存事件
+// AI 扩图编辑成功事件
 const onImageOutPaintingSuccess = (newPicture: API.PictureVO) => {
   picture.value = newPicture
 }

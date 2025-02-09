@@ -11,17 +11,24 @@
     </a-modal>
   </div>
 </template>
-<script lang="ts" setup>
-import { ref } from 'vue'
 
+<script setup lang="ts">
+import {defineProps, ref, withDefaults} from 'vue'
+
+/**
+ * 定义组件属性类型
+ */
 interface Props {
   title: string
   link: string
 }
 
+/**
+ * 给组件指定初始值
+ */
 const props = withDefaults(defineProps<Props>(), {
-  title: '分享图片',
-  link: 'https://www.codefather.cn',
+  title: () => '分享',
+  link: () => 'https://baidu.com',
 })
 
 // 是否可见
@@ -42,3 +49,5 @@ defineExpose({
   openModal,
 })
 </script>
+
+<style scoped></style>

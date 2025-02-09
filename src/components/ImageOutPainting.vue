@@ -32,12 +32,12 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { onUnmounted, ref } from 'vue'
 import {
   createPictureOutPaintingTaskUsingPost,
   getPictureOutPaintingTaskUsingGet,
   uploadPictureByUrlUsingPost,
-} from '@/api/pictureController.ts'
+} from '@/api/pictureController'
 import { message } from 'ant-design-vue'
 
 interface Props {
@@ -48,8 +48,25 @@ interface Props {
 
 const props = defineProps<Props>()
 
-const resultImageUrl = ref<string>('')
+// 是否可见
+const visible = ref(false)
 
+// 打开弹窗
+const openModal = () => {
+  visible.value = true
+}
+
+// 关闭弹窗
+const closeModal = () => {
+  visible.value = false
+}
+
+// 暴露函数给父组件
+defineExpose({
+  openModal,
+})
+
+const resultImageUrl = ref<string>()
 // 任务 id
 const taskId = ref<string>()
 
@@ -62,7 +79,7 @@ const createTask = async () => {
   }
   const res = await createPictureOutPaintingTaskUsingPost({
     pictureId: props.picture.id,
-    // 根据需要设置扩图参数
+    // 可以根据需要设置扩图参数
     parameters: {
       xScale: 2,
       yScale: 2,
@@ -75,7 +92,7 @@ const createTask = async () => {
     // 开启轮询
     startPolling()
   } else {
-    message.error('图片任务失败，' + res.data.message)
+    message.error('创建图片任务失败，' + res.data.message)
   }
 }
 
@@ -83,6 +100,9 @@ const createTask = async () => {
 let pollingTimer: NodeJS.Timeout = null
 
 // 开始轮询
+// 1. 清理定时器
+// 2. 将定时器变量设置为null
+// 3. 将任务id设置为null，这样允许前端多次执行任务
 const startPolling = () => {
   if (!taskId.value) {
     return
@@ -115,7 +135,7 @@ const startPolling = () => {
   }, 3000) // 每 3 秒轮询一次
 }
 
-// 清理轮询
+// 清理轮询定时器
 const clearPolling = () => {
   if (pollingTimer) {
     clearInterval(pollingTimer)
@@ -124,8 +144,12 @@ const clearPolling = () => {
   }
 }
 
-// 是否正在上传
-const uploadLoading = ref(false)
+// 清理定时器，避免内存泄漏
+onUnmounted(() => {
+  clearPolling()
+})
+
+const uploadLoading = ref<boolean>(false)
 
 /**
  * 上传图片
@@ -154,30 +178,13 @@ const handleUpload = async () => {
   } catch (error) {
     console.error('图片上传失败', error)
     message.error('图片上传失败，' + error.message)
+  } finally {
+    uploadLoading.value = false
   }
-  uploadLoading.value = false
 }
-
-// 是否可见
-const visible = ref(false)
-
-// 打开弹窗
-const openModal = () => {
-  visible.value = true
-}
-
-// 关闭弹窗
-const closeModal = () => {
-  visible.value = false
-}
-
-// 暴露函数给父组件
-defineExpose({
-  openModal,
-})
 </script>
 
-<style>
+<style scoped>
 .image-out-painting {
   text-align: center;
 }

@@ -4,11 +4,11 @@
       <h2>空间成员管理</h2>
       <a-space>
         <a-button type="primary" href="/add_space" target="_blank">+ 创建空间</a-button>
-        <a-button type="primary" ghost href="/space_analyze?queryPublic=1" target="_blank"
-          >分析公共图库
+        <a-button type="primary" ghost href="/space_analyze?queryPublic=1" target="_blank">
+          分析公共图库
         </a-button>
-        <a-button type="primary" ghost href="/space_analyze?queryAll=1" target="_blank"
-          >分析全部空间
+        <a-button type="primary" ghost href="/space_analyze?queryAll=1" target="_blank">
+          分析全空间
         </a-button>
       </a-space>
     </a-flex>
@@ -63,12 +63,14 @@ import {
 } from '@/api/spaceUserController.ts'
 import dayjs from 'dayjs'
 
+// 定义属性
 interface Props {
   id: string
 }
 
 const props = defineProps<Props>()
 
+// 表格列
 const columns = [
   {
     title: '用户',

@@ -1,11 +1,12 @@
 <template>
   <div id="globalHeader">
+    <!-- RouterLink组件，允许点击后跳转（不刷新页面） -->
     <a-row :wrap="false">
       <a-col flex="200px">
         <router-link to="/">
           <div class="title-bar">
             <img class="logo" src="../assets/logo.png" alt="logo" />
-            <div class="title">鱼皮云图库</div>
+            <div class="title">图管家</div>
           </div>
         </router-link>
       </a-col>
@@ -53,7 +54,8 @@
 <script lang="ts" setup>
 import { computed, h, ref } from 'vue'
 import { HomeOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons-vue'
-import { MenuProps, message } from 'ant-design-vue'
+import type { MenuProps } from 'ant-design-vue'
+import { message } from 'ant-design-vue'
 import { useRouter } from 'vue-router'
 import { useLoginUserStore } from '@/stores/useLoginUserStore.ts'
 import { userLogoutUsingPost } from '@/api/userController.ts'
@@ -110,18 +112,18 @@ const filterMenus = (menus = [] as MenuProps['items']) => {
 }
 
 // 展示在菜单的路由数组
-const items = computed(() => filterMenus(originItems))
+const items = computed<MenuProps['items']>(() => filterMenus(originItems))
 
 const router = useRouter()
-// 当前要高亮的菜单项
+// 当前选中/需要高亮的菜单
 const current = ref<string[]>([])
-// 监听路由变化，更新高亮菜单项
+// 监听路由变化，更新当前选中菜单
 router.afterEach((to, from, next) => {
   current.value = [to.path]
 })
 
 // 路由跳转事件
-const doMenuClick = ({ key }) => {
+const doMenuClick = ({ key }: { key: string }) => {
   router.push({
     path: key,
   })
@@ -130,6 +132,7 @@ const doMenuClick = ({ key }) => {
 // 用户注销
 const doLogout = async () => {
   const res = await userLogoutUsingPost()
+  console.log(res)
   if (res.data.code === 0) {
     loginUserStore.setLoginUser({
       userName: '未登录',

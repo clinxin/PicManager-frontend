@@ -89,6 +89,12 @@ declare namespace API {
     message?: string
   }
 
+  type BaseResponseObject_ = {
+    code?: number
+    data?: Record<string, any>
+    message?: string
+  }
+
   type BaseResponsePagePicture_ = {
     code?: number
     data?: PagePicture_
@@ -242,7 +248,6 @@ declare namespace API {
 
   type LoginUserVO = {
     createTime?: string
-    editTime?: string
     id?: number
     updateTime?: string
     userAccount?: string
@@ -381,8 +386,8 @@ declare namespace API {
     picWidth?: number
     reviewMessage?: string
     reviewStatus?: number
-    reviewTime?: string
     reviewerId?: number
+    reviewerTime?: string
     searchText?: string
     sortField?: string
     sortOrder?: string

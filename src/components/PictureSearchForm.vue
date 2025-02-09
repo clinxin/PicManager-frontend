@@ -1,7 +1,9 @@
 <template>
   <div class="picture-search-form">
+    <!-- 打印搜索参数变化（仅调试使用）
+    {{ searchParams }} -->
     <!-- 搜索表单 -->
-    <a-form name="searchForm" layout="inline" :model="searchParams" @finish="doSearch">
+    <a-form layout="inline" :model="searchParams" @finish="doSearch">
       <a-form-item label="关键词" name="searchText">
         <a-input
           v-model:value="searchParams.searchText"
@@ -68,9 +70,10 @@ import { onMounted, reactive, ref } from 'vue'
 import dayjs from 'dayjs'
 import { listPictureTagCategoryUsingGet } from '@/api/pictureController.ts'
 import { message } from 'ant-design-vue'
+import PictureQueryRequest = API.PictureQueryRequest
 
 interface Props {
-  onSearch?: (searchParams: API.PictureQueryRequest) => void
+  onSearch?: (searchParams: PictureQueryRequest) => void
 }
 
 const props = defineProps<Props>()
@@ -94,6 +97,7 @@ const tagOptions = ref<string[]>([])
 const getTagCategoryOptions = async () => {
   const res = await listPictureTagCategoryUsingGet()
   if (res.data.code === 0 && res.data.data) {
+    // 转换成下拉选项组件接受的格式
     tagOptions.value = (res.data.data.tagList ?? []).map((data: string) => {
       return {
         value: data,

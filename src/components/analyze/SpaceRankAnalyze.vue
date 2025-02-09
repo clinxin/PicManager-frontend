@@ -10,8 +10,8 @@
 import { computed, ref, watchEffect } from 'vue'
 import { message } from 'ant-design-vue'
 import { getSpaceRankAnalyzeUsingPost } from '@/api/spaceAnalyzeController'
-import VChart from 'vue-echarts'  // 图表数据
-import 'echarts'                  // 图表数据
+import VChart from 'vue-echarts'
+import 'echarts'
 
 interface Props {
   queryAll?: boolean
@@ -29,7 +29,9 @@ const dataList = ref<API.Space[]>([])
 // 加载状态
 const loading = ref(true)
 
-// 获取数据
+/**
+ * 加载数据
+ */
 const fetchData = async () => {
   loading.value = true
   // 转换搜索参数

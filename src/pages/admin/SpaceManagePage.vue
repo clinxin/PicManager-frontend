@@ -4,21 +4,21 @@
       <h2>空间管理</h2>
       <a-space>
         <a-button type="primary" href="/add_space" target="_blank">+ 创建空间</a-button>
-        <a-button type="primary" ghost href="/space_analyze?queryPublic=1" target="_blank"
-        >分析公共图库</a-button
-        >
-        <a-button type="primary" ghost href="/space_analyze?queryAll=1" target="_blank"
-        >分析全部空间</a-button
-        >
+        <a-button type="primary" ghost href="/space_analyze?queryPublic=1" target="_blank">
+          分析公共图库
+        </a-button>
+        <a-button type="primary" ghost href="/space_analyze?queryAll=1" target="_blank">
+          分析全空间
+        </a-button>
       </a-space>
     </a-flex>
     <div style="margin-bottom: 16px" />
     <!-- 搜索表单 -->
     <a-form layout="inline" :model="searchParams" @finish="doSearch">
-      <a-form-item label="空间名称">
+      <a-form-item label="空间名称" name="spaceName">
         <a-input v-model:value="searchParams.spaceName" placeholder="请输入空间名称" allow-clear />
       </a-form-item>
-      <a-form-item name="spaceLevel" label="空间级别">
+      <a-form-item label="空间级别" name="spaceLevel">
         <a-select
           v-model:value="searchParams.spaceLevel"
           style="min-width: 180px"
@@ -36,7 +36,7 @@
           allow-clear
         />
       </a-form-item>
-      <a-form-item label="用户 id">
+      <a-form-item label="用户 id" name="userId">
         <a-input v-model:value="searchParams.userId" placeholder="请输入用户 id" allow-clear />
       </a-form-item>
       <a-form-item>
@@ -51,14 +51,25 @@
       :pagination="pagination"
       @change="doTableChange"
     >
+      <template #headerCell="{ column }">
+        <template v-if="column.key === 'name'">
+        <span>
+          <smile-outlined />
+          Name
+        </span>
+        </template>
+      </template>
+
       <template #bodyCell="{ column, record }">
+        <!-- 空间级别 -->
         <template v-if="column.dataIndex === 'spaceLevel'">
-          <div>{{ SPACE_LEVEL_MAP[record.spaceLevel] }}</div>
+          <a-tag>{{ SPACE_LEVEL_MAP[record.spaceLevel] }}</a-tag>
         </template>
         <!-- 空间类别 -->
         <template v-if="column.dataIndex === 'spaceType'">
           <a-tag>{{ SPACE_TYPE_MAP[record.spaceType] }}</a-tag>
         </template>
+        <!-- 使用情况 -->
         <template v-if="column.dataIndex === 'spaceUseInfo'">
           <div>大小：{{ formatSize(record.totalSize) }} / {{ formatSize(record.maxSize) }}</div>
           <div>数量：{{ record.totalCount }} / {{ record.maxCount }}</div>
@@ -85,6 +96,7 @@
   </div>
 </template>
 <script lang="ts" setup>
+import { SmileOutlined } from '@ant-design/icons-vue'
 import { computed, onMounted, reactive, ref } from 'vue'
 import { deleteSpaceUsingPost, listSpaceByPageUsingPost } from '@/api/spaceController.ts'
 import { message } from 'ant-design-vue'
@@ -171,11 +183,11 @@ onMounted(() => {
 // 分页参数
 const pagination = computed(() => {
   return {
-    current: searchParams.current,
-    pageSize: searchParams.pageSize,
+    current: searchParams.current ?? 1,
+    pageSize: searchParams.pageSize ?? 10,
     total: total.value,
     showSizeChanger: true,
-    showTotal: (total) => `共 ${total} 条`,
+    showTotal: (total: number) => `共 ${total} 条`,
   }
 })
 
@@ -188,23 +200,26 @@ const doTableChange = (page: any) => {
 
 // 搜索数据
 const doSearch = () => {
-  // 重置页码
+  // 重置搜索页码
   searchParams.current = 1
   fetchData()
 }
 
 // 删除数据
 const doDelete = async (id: string) => {
-  if (!id) {
-    return
-  }
-  const res = await deleteSpaceUsingPost({ id })
-  if (res.data.code === 0) {
-    message.success('删除成功')
-    // 刷新数据
-    fetchData()
-  } else {
-    message.error('删除失败')
+  // const doDelete = async (id: number) => { // 解决办法1：调整id类型; 解决办法2：调整typings.d.ts里的id类型
+  if (confirm(`确认删除id为${id}的数据吗？`)) {
+    if (!id) {
+      return
+    }
+    const res = await deleteSpaceUsingPost({ id }) // id报红是因为这里定义的string与typings.d.ts里的number不匹配
+    if (res.data.code === 0) {
+      message.success('删除成功')
+      // 刷新数据
+      fetchData()
+    } else {
+      message.error('删除失败')
+    }
   }
 }
 </script>

@@ -49,7 +49,7 @@
     <PictureSearchForm :onSearch="onSearch" />
     <div style="margin-bottom: 16px" />
     <!-- 按颜色搜索，跟其他搜索条件独立 -->
-    <a-form-item label="按颜色搜索">
+    <a-form-item label="按颜色搜索" style="margin-top: 16px">
       <color-picker format="hex" @pureColorChange="onColorChange" />
     </a-form-item>
     <!-- 图片列表 -->
@@ -67,9 +67,11 @@
       v-model:current="searchParams.current"
       v-model:pageSize="searchParams.pageSize"
       :total="total"
+      :show-total="() => `图片总数 ${total} / ${space.maxCount}`"
       @change="onPageChange"
     />
-    <BatchEditPictureModal
+    <!-- 批量编辑 -->
+    <BatchEditPictureModel
       ref="batchEditPictureModalRef"
       :spaceId="id"
       :pictureList="dataList"
@@ -91,7 +93,7 @@ import PictureList from '@/components/PictureList.vue'
 import PictureSearchForm from '@/components/PictureSearchForm.vue'
 import { ColorPicker } from 'vue3-colorpicker'
 import 'vue3-colorpicker/style.css'
-import BatchEditPictureModal from '@/components/BatchEditPictureModel.vue'
+import BatchEditPictureModel from '@/components/BatchEditPictureModel.vue'
 import { BarChartOutlined, EditOutlined, TeamOutlined } from '@ant-design/icons-vue'
 import { SPACE_PERMISSION_ENUM, SPACE_TYPE_MAP } from '../constants/space.ts'
 
@@ -102,6 +104,7 @@ interface Props {
 const props = defineProps<Props>()
 const space = ref<API.SpaceVO>({})
 
+// ------------- 空间权限检查 -------------
 // 通用权限检查函数
 function createPermissionChecker(permission: string) {
   return computed(() => {
@@ -115,7 +118,7 @@ const canUploadPicture = createPermissionChecker(SPACE_PERMISSION_ENUM.PICTURE_U
 const canEditPicture = createPermissionChecker(SPACE_PERMISSION_ENUM.PICTURE_EDIT)
 const canDeletePicture = createPermissionChecker(SPACE_PERMISSION_ENUM.PICTURE_DELETE)
 
-// -------- 获取空间详情 --------
+// ------------- 获取空间详情 -------------
 const fetchSpaceDetail = async () => {
   try {
     const res = await getSpaceVoByIdUsingGet({
@@ -135,7 +138,7 @@ onMounted(() => {
   fetchSpaceDetail()
 })
 
-// --------- 获取图片列表 --------
+// ------------- 获取图片列表 -------------
 
 // 定义数据
 const dataList = ref<API.PictureVO[]>([])
@@ -210,10 +213,11 @@ const onColorChange = async (color: string) => {
   loading.value = false
 }
 
-// ---- 批量编辑图片 -----
+// ------------- 批量编辑图片 -------------
+// 分享弹窗引用
 const batchEditPictureModalRef = ref()
 
-// 批量编辑图片成功
+// 批量编辑图片成功后，刷新数据
 const onBatchEditPictureSuccess = () => {
   fetchData()
 }

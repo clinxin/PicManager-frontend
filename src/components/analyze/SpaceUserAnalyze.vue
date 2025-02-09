@@ -47,13 +47,16 @@ const timeDimensionOptions = [
     value: 'month',
   },
 ]
+
 // 用户选项
 const userId = ref<string>()
 const doSearch = (value: string) => {
   userId.value = value
 }
 
-// 图表数据
+/**
+ * 加载数据
+ */
 const dataList = ref<API.SpaceCategoryAnalyzeResponse>([])
 // 加载状态
 const loading = ref(true)

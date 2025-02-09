@@ -1,7 +1,7 @@
 <template>
   <!-- @author clinxin <a href="http://localhost:8888">图管家 -->
   <div id="addPictureBatchPage">
-    <h2 style="margin-bottom: 16px">批量创建</h2>
+    <h2 style="margin-bottom: 16px">批量创建图片</h2>
     <!-- 图片信息表单 -->
     <a-form name="formData" layout="vertical" :model="formData" @finish="handleSubmit">
       <a-form-item name="searchText" label="关键词">
@@ -34,14 +34,12 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive, ref } from 'vue'
+import { reactive, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { message } from 'ant-design-vue'
 import {
-  getPictureVoByIdUsingGet,
-  listPictureTagCategoryUsingGet,
   uploadPictureByBatchUsingPost,
 } from '@/api/pictureController.ts'
-import { useRoute, useRouter } from 'vue-router'
 
 const formData = reactive<API.PictureUploadByBatchRequest>({
   count: 10,
@@ -65,7 +63,7 @@ const handleSubmit = async (values: any) => {
     message.success(`创建成功，共 ${res.data.data} 条`)
     // 跳转到主页
     router.push({
-      path: `/`,
+      path: `/`, //path: '/',
     })
   } else {
     message.error('创建失败，' + res.data.message)

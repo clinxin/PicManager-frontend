@@ -23,7 +23,8 @@ const checkUserSpace = async () => {
     router.replace('/user/login')
     return
   }
-  // 如果用户已登录，会获取该用户已创建的空间
+  // 如果用户已登录，会获取用户已创建的空间信息
+  // 获取用户空间信息
   const res = await listSpaceVoByPageUsingPost({
     userId: loginUser.id,
     current: 1,
@@ -50,3 +51,5 @@ onMounted(() => {
   checkUserSpace()
 })
 </script>
+
+<style scoped></style>

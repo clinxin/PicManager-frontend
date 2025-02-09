@@ -10,7 +10,7 @@
         @search="doSearch"
       />
     </div>
-    <!-- 分类和标签筛选 -->
+    <!-- 分类 + 标签筛选 -->
     <a-tabs v-model:active-key="selectedCategory" @change="doSearch">
       <a-tab-pane key="all" tab="全部" />
       <a-tab-pane v-for="category in categoryList" :tab="category" :key="category" />
@@ -42,6 +42,7 @@
 </template>
 
 <script setup lang="ts">
+// 数据
 import { onMounted, reactive, ref } from 'vue'
 import {
   listPictureTagCategoryUsingGet,
@@ -123,6 +124,7 @@ const getTagCategoryOptions = async () => {
   const res = await listPictureTagCategoryUsingGet()
   if (res.data.code === 0 && res.data.data) {
     tagList.value = res.data.data.tagList ?? []
+    // 转换成下拉选项组件接受的格式
     categoryList.value = res.data.data.categoryList ?? []
   } else {
     message.error('获取标签分类列表失败，' + res.data.message)

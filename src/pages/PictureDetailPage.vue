@@ -81,7 +81,7 @@
         </a-card>
       </a-col>
     </a-row>
-    <ShareModal ref="shareModalRef" :link="shareLink" />
+    <ShareModel ref="shareModalRef" :link="shareLink" />
   </div>
 </template>
 
@@ -97,7 +97,7 @@ import {
 } from '@ant-design/icons-vue'
 import { useRouter } from 'vue-router'
 import { downloadImage, formatSize, toHexColor } from '@/utils'
-import ShareModal from '@/components/ShareModel.vue'
+import ShareModel from '@/components/ShareModel.vue'
 import { SPACE_PERMISSION_ENUM } from '@/constants/space.ts'
 
 interface Props {
@@ -140,8 +140,22 @@ onMounted(() => {
 
 const router = useRouter()
 
+// const loginUserStore = useLoginUserStore()
+/*// 是否具有编辑权限
+const canEdit = computed(() => {
+  const loginUser = loginUserStore.loginUser
+  // 未登录不可编辑
+  if (!loginUser.id) {
+    return false
+  }
+  // 仅本人或管理员可编辑
+  const user = picture.value.user || {}
+  return loginUser.id === user.id || loginUser.userRole === 'admin'
+})*/
+
 // 编辑
 const doEdit = () => {
+  // 跳转时一定要携带 spaceId
   router.push({
     path: '/add_picture',
     query: {
@@ -170,7 +184,8 @@ const doDownload = () => {
   downloadImage(picture.value.url)
 }
 
-// ----- 分享操作 ----
+// --------------- 分享操作 ---------------
+// 分享弹窗引用
 const shareModalRef = ref()
 // 分享链接
 const shareLink = ref<string>()

@@ -2,13 +2,14 @@
   <div id="globalSider">
     <a-layout-sider
       v-if="loginUserStore.loginUser.id"
+      class="sider"
       width="200"
       breakpoint="lg"
       collapsed-width="0"
     >
       <a-menu
-        v-model:selectedKeys="current"
         mode="inline"
+        v-model:selectedKeys="current"
         :items="menuItems"
         @click="doMenuClick"
       />
@@ -30,8 +31,8 @@ const loginUserStore = useLoginUserStore()
 const fixedMenuItems = [
   {
     key: '/',
-    icon: () => h(PictureOutlined),
     label: '公共图库',
+    icon: () => h(PictureOutlined),
   },
   {
     key: '/my_space',
@@ -98,7 +99,7 @@ router.afterEach((to, from, next) => {
 })
 
 // 路由跳转事件
-const doMenuClick = ({ key }) => {
+const doMenuClick = ({ key }: { key: string }) => {
   router.push(key)
 }
 </script>

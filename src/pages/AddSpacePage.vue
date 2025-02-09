@@ -27,10 +27,10 @@
     <a-card title="空间级别介绍">
       <a-typography-paragraph>
         * 目前仅支持开通普通版，如需升级空间，请联系
-        <a href="https://codefather.cn" target="_blank">程序员鱼皮</a>
+        <a href="https://localhost:8888" target="_blank">图管家</a>
       </a-typography-paragraph>
       <a-typography-paragraph v-for="spaceLevel in spaceLevelList">
-        {{ spaceLevel.text }}：大小 {{ formatSize(spaceLevel.maxSize) }}，数量
+        {{ spaceLevel.text }}： 大小 {{ formatSize(spaceLevel.maxSize) }}， 数量
         {{ spaceLevel.maxCount }}
       </a-typography-paragraph>
     </a-card>
@@ -47,7 +47,7 @@ import {
   updateSpaceUsingPost,
 } from '@/api/spaceController.ts'
 import { useRoute, useRouter } from 'vue-router'
-import {SPACE_LEVEL_MAP, SPACE_LEVEL_OPTIONS, SPACE_TYPE_ENUM, SPACE_TYPE_MAP} from '@/constants/space.ts'
+import { SPACE_LEVEL_OPTIONS, SPACE_TYPE_ENUM, SPACE_TYPE_MAP } from '@/constants/space'
 import { formatSize } from '../utils'
 
 const space = ref<API.SpaceVO>()
@@ -107,8 +107,10 @@ const handleSubmit = async (values: any) => {
   if (res.data.code === 0 && res.data.data) {
     message.success('操作成功')
     // 跳转到空间详情页
+    let path = `/space/${spaceId ?? res.data.data}`
     router.push({
-      path: `/space/${res.data.data}`,
+      // path: `/space/${res.data.data}`,
+      path,
     })
   } else {
     message.error('操作失败，' + res.data.message)
@@ -122,7 +124,7 @@ const getOldSpace = async () => {
   const id = route.query?.id
   if (id) {
     const res = await getSpaceVoByIdUsingGet({
-      id,
+      id: id,
     })
     if (res.data.code === 0 && res.data.data) {
       const data = res.data.data
@@ -134,6 +136,7 @@ const getOldSpace = async () => {
   }
 }
 
+// 页面加载时，请求老数据
 onMounted(() => {
   getOldSpace()
 })

@@ -27,7 +27,8 @@
                 <img
                   :alt="picture.name"
                   :src="picture.thumbUrl"
-                  style="height: 180px; object-fit: cover"
+                  style="height: 180px;
+                  object-fit: cover"
                 />
               </template>
             </a-card>
@@ -49,9 +50,11 @@ import { useRoute } from 'vue-router'
 
 const route = useRoute()
 
+// 图片 id
 const pictureId = computed(() => {
   return route.query?.pictureId
 })
+
 const picture = ref<API.PictureVO>({})
 
 // 获取图片详情
